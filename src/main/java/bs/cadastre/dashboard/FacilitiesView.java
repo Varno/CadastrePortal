@@ -72,6 +72,7 @@ public class FacilitiesView extends VerticalLayout implements View {
                 return super.formatPropertyValue(rowId, colId, property);
             }
         };
+        t.setPageLength(10);
         t.setSizeFull();
         t.addStyleName("borderless");
         t.setSelectable(true);
