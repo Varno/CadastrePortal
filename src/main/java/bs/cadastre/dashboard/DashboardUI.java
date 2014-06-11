@@ -49,7 +49,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 @Theme("dashboard")
-@Title("QuickTickets Dashboard")
+@Title("Кадастр")
 public class DashboardUI extends UI {
 
     DataProvider dataProvider = new DataProvider();
