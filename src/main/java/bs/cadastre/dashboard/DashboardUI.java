@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
-import bs.cadastre.dashboard.data.DataProvider;
 import bs.cadastre.dashboard.data.MyConverterFactory;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
@@ -41,10 +40,6 @@ import com.vaadin.ui.VerticalLayout;
 @Theme("dashboard")
 @Title("Кадастр")
 public class DashboardUI extends UI {
-
-    DataProvider dataProvider = new DataProvider();
-
-    private static final long serialVersionUID = 1L;
 
     CssLayout root = new CssLayout();
 

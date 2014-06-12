@@ -89,7 +89,8 @@ public class FacilitiesView extends VerticalLayout implements ComponentContainer
                 facilityEditor.addListener(new EditorSavedListener() {
                     @Override
                     public void editorSaved(EditorSavedEvent event) {
-                        facilities.addEntity(newPersonItem.getBean());
+                        Facility entity = newPersonItem.getBean();
+                        facilities.addEntity(entity);
                     }
                 });
                 UI.getCurrent().addWindow(facilityEditor);

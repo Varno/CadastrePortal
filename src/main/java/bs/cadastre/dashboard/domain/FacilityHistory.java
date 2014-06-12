@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-public class HistoryEntry {
+public class FacilityHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,8 +18,9 @@ public class HistoryEntry {
     @NotNull
     @Size(min = 3, max = 24)
     private String userName;
+    private long facilityId;
     @Temporal(TemporalType.DATE)
-    private java.util.Date actionTime;
+    private java.util.Calendar actionTime;
     private String actionType;
     private String description;
 
@@ -31,6 +32,14 @@ public class HistoryEntry {
         this.id = id;
     }
 
+    public Long getFacilityId() {
+        return this.facilityId;
+    }
+
+    public void setFacilityId(Long facilityId) {
+        this.facilityId = facilityId;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -39,11 +48,11 @@ public class HistoryEntry {
         this.userName = userName;
     }
 
-    public java.util.Date getActionTime() {
+    public java.util.Calendar getActionTime() {
         return actionTime;
     }
 
-    public void setActionTime(java.util.Date actionTime) {
+    public void setActionTime(java.util.Calendar actionTime) {
         this.actionTime = actionTime;
     }
 

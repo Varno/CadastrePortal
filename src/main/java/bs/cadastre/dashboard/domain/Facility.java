@@ -3,11 +3,13 @@ package bs.cadastre.dashboard.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.*;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "Facilities")
 public class Facility {
 
     @Id
@@ -20,7 +22,7 @@ public class Facility {
     private Double area;
     private String destination;
     private String location;
-    private Integer permittedUsage;
+    private String permittedUsage;
     private String address;
 
     public Long getId() {
@@ -63,11 +65,11 @@ public class Facility {
         this.location = location;
     }
 
-    public Integer getPermittedUsage() {
+    public String getPermittedUsage() {
         return permittedUsage;
     }
 
-    public void setPermittedUsage(Integer permittedUsage) {
+    public void setPermittedUsage(String permittedUsage) {
         this.permittedUsage = permittedUsage;
     }
 
