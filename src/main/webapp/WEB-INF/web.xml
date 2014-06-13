@@ -17,25 +17,30 @@
 		<param-name>productionMode</param-name>
 		<param-value>${productionMode}</param-value>
 	</context-param>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
 	<servlet>
 		<servlet-name>CadastreDashboard</servlet-name>
-		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
-		<init-param>
-			<param-name>UI</param-name>
-			<param-value>bs.cadastre.dashboard.DashboardUI</param-value>
-		</init-param>
+        <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
+        <init-param>
+            <param-name>beanName</param-name>
+            <param-value>dashboardUI</param-value>
+        </init-param>
 		<init-param>
 			<param-name>widgetset</param-name>
 			<param-value>bs.cadastre.dashboard.DashboardWidgetSet</param-value>
-		</init-param>
-		<init-param>
-			<param-name>UIProvider</param-name>
-			<param-value>bs.cadastre.dashboard.DashboardUIProvider</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>CadastreDashboard</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
-
 </web-app>

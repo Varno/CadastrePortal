@@ -3,6 +3,8 @@ package bs.cadastre.dashboard;
 import bs.cadastre.dashboard.domain.*;
 import bs.cadastre.dashboard.FacilityEditor.EditorSavedEvent;
 import bs.cadastre.dashboard.FacilityEditor.EditorSavedListener;
+import bs.cadastre.dashboard.providers.FacilityProvider;
+import com.vaadin.addon.jpacontainer.EntityProvider;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -16,8 +18,27 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.transaction.annotation.Transactional;
+import ru.xpoft.vaadin.VaadinView;
 
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+@org.springframework.stereotype.Component
+@Scope("prototype")
+@VaadinView(FacilitiesView.NAME)
+@Transactional
 public class FacilitiesView extends VerticalLayout implements ComponentContainer, View {
+
+    public static final String NAME = "facilities";
+
+    @Resource(name = "facilityProvider")
+    private EntityProvider<Facility> facilityProvider;
 
     private Table facilityTable;
 
@@ -33,7 +54,9 @@ public class FacilitiesView extends VerticalLayout implements ComponentContainer
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        this.facilities = JPAContainerFactory.make(Facility.class, "cadastre");
+
+        this.facilities = new JPAContainer(Facility.class);
+        this.facilities.setEntityProvider(this.facilityProvider);
         this.buildMainArea();
     }
 

@@ -1,45 +1,48 @@
 package bs.cadastre.dashboard;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.vaadin.server.*;
+import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import bs.cadastre.dashboard.data.MyConverterFactory;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.event.Transferable;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.Page;
-import com.vaadin.server.ThemeResource;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.DragAndDropWrapper;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import ru.xpoft.vaadin.DiscoveryNavigator;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Theme("dashboard")
 @Title("Кадастр")
+@org.springframework.stereotype.Component
+@Scope("prototype")
 public class DashboardUI extends UI {
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Autowired
+    private ApplicationContext appContext;
 
     CssLayout root = new CssLayout();
 
@@ -56,20 +59,15 @@ public class DashboardUI extends UI {
 
     HashMap<String, Button> viewNameToMenuButton = new HashMap<String, Button>();
 
-    private Navigator nav;
+    private DiscoveryNavigator nav;
 
     @Override
     protected void init(VaadinRequest request) {
         getSession().setConverterFactory(new MyConverterFactory());
-
-        // setLocale(Locale.US);
-
         setContent(root);
         root.addStyleName("root");
         root.setSizeFull();
 
-        // Unfortunate to use an actual widget here, but since CSS generated
-        // elements can't be transitioned yet, we must
         Label bg = new Label();
         bg.setSizeUndefined();
         bg.addStyleName("login-bg");
@@ -176,11 +174,7 @@ public class DashboardUI extends UI {
 
     private void buildMainView() {
 
-        nav = new Navigator(this, content);
-
-        for (String route : routes.keySet()) {
-            nav.addView(route, routes.get(route));
-        }
+        nav = new DiscoveryNavigator(this, content);
 
         removeStyleName("login");
         root.removeComponent(loginLayout);
@@ -264,20 +258,19 @@ public class DashboardUI extends UI {
 
         menu.removeAllComponents();
 
-        final String viewName = "facilities";
         Button b = new NativeButton("Недвижимость");
-        b.addStyleName("icon-" + viewName);
+        b.addStyleName("icon-" + FacilitiesView.NAME);
         b.addClickListener(new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 clearMenuSelection();
                 event.getButton().addStyleName("selected");
-                if (!nav.getState().equals("/" + viewName))
-                    nav.navigateTo("/" + viewName);
+                if (!nav.getState().equals("/" + FacilitiesView.NAME))
+                    nav.navigateTo(FacilitiesView.NAME);
             }
         });
         menu.addComponent(b);
-        viewNameToMenuButton.put("/" + viewName, b);
+        viewNameToMenuButton.put(FacilitiesView.NAME, b);
 
         menu.addStyleName("menu");
         menu.setHeight("100%");
@@ -287,8 +280,8 @@ public class DashboardUI extends UI {
             f = f.substring(1);
         }
         if (f == null || f.equals("") || f.equals("/")) {
-            nav.navigateTo("/facilities");
-            menu.getComponent(0).addStyleName("selected");
+            nav.navigateTo(FacilitiesView.NAME);
+            viewNameToMenuButton.get(FacilitiesView.NAME).addStyleName("selected");
         } else {
             nav.navigateTo(f);
             viewNameToMenuButton.get(f).addStyleName("selected");
@@ -308,20 +301,15 @@ public class DashboardUI extends UI {
 
     }
 
-    private Transferable items;
-
     private void clearMenuSelection() {
         for (Iterator<Component> it = menu.getComponentIterator(); it.hasNext();) {
             Component next = it.next();
             if (next instanceof NativeButton) {
                 next.removeStyleName("selected");
             } else if (next instanceof DragAndDropWrapper) {
-                // Wow, this is ugly (even uglier than the rest of the code)
                 ((DragAndDropWrapper) next).iterator().next()
                         .removeStyleName("selected");
             }
         }
     }
-
-    Table facilities;
 }
